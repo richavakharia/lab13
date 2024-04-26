@@ -33,6 +33,9 @@ public class FamilyTree
         {
             // Add childNode to this node's children list. Also
             // set childNode's parent to this node.
+        	children.add(childNode);
+            childNode.parent = this;
+        	
         }
         
         
@@ -40,15 +43,18 @@ public class FamilyTree
         // with the given name. Returns the node, or null if not found.
         TreeNode getNodeWithName(String targetName)
         {
-            // Does this node have the target name?
-            if (?????)
+        	// Does this node have the target name?
+            if (this.name.equals(targetName))
                 return this;
-                    
+                        
             // No, recurse. Check all children of this node.
-            for (TreeNode child: children)
+            for (TreeNode child : children)
             {
                 // If child.getNodeWithName(targetName) returns a non-null node,
                 // then that's the node we're looking for. Return it.
+                TreeNode foundNode = child.getNodeWithName(targetName);
+                if (foundNode != null)
+                    return foundNode;
             }
             
             // Not found anywhere.
@@ -60,31 +66,24 @@ public class FamilyTree
         // ending with the root. Order is from recent to ancient.
         ArrayList<TreeNode> collectAncestorsToList()
         {
-            ArrayList<TreeNode> ancestors = new ArrayList<>();
+        	ArrayList<TreeNode> ancestors = new ArrayList<>();
 
-            // ?????  Collect ancestors of this TreeNode into the array list. HINT: going up
-            // the nodes of a tree is like traversing a linked list. If that isn’t clear,
-            // draw a tree, mark any leaf node, and then mark its ancestors in order from
-            // recent to ancient. Expect a question about this on the final exam.
+            // Collect ancestors of this TreeNode into the array list.
+            // Start from this node's parent and go up until root.
+            TreeNode currentNode = this;
+            while (currentNode.parent != null)
+            {
+                ancestors.add(currentNode.parent);
+                currentNode = currentNode.parent;
+            }
+
+            // Add the root node.
+            ancestors.add(root);
+
+            // Reverse the list to get the order from recent to ancient.
+            Collections.reverse(ancestors);
 
             return ancestors;
-        }
-        
-        
-        public String toString()
-        {
-            return toStringWithIndent("");
-        }
-        
-        
-        private String toStringWithIndent(String indent)
-        {
-            String s = indent + name + "\n";
-            indent += "  ";
-            for (TreeNode childNode: children)
-                s += childNode.toStringWithIndent(indent);
-            return s;
-        }
     }
 
 	private TreeNode			root;
